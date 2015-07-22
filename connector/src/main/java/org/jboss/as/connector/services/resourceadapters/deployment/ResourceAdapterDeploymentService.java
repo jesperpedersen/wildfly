@@ -39,6 +39,7 @@ import org.jboss.as.connector.services.mdr.AS7MetadataRepository;
 import org.jboss.as.connector.services.resourceadapters.IronJacamarActivationResourceService;
 import org.jboss.as.connector.services.resourceadapters.ResourceAdapterService;
 import org.jboss.as.connector.subsystems.resourceadapters.RaOperationUtil;
+import org.jboss.as.connector.subsystems.resourceadapters.ModifiableResourceAdapter;
 import org.jboss.as.connector.util.ConnectorServices;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.registry.Resource;
@@ -112,6 +113,12 @@ public final class ResourceAdapterDeploymentService extends AbstractResourceAdap
         final File root = connectorXmlDescriptor == null ? null : connectorXmlDescriptor.getRoot();
         DEPLOYMENT_CONNECTOR_LOGGER.debugf("DEPLOYMENT name = %s", deploymentName);
         final boolean fromModule = duServiceName.getParent().equals(RaOperationUtil.RAR_MODULE);
+
+        if (activation != null && activation.getTransactionSupport() == null && activation instanceof ModifiableResourceAdapter) {
+            ModifiableResourceAdapter mra = (ModifiableResourceAdapter)activation;
+            mra.setTransactionSupport(cmd.getResourceadapter().getOutboundResourceadapter().getTransactionSupport());
+        }
+
         final WildFLyRaDeployer raDeployer =
                 new WildFLyRaDeployer(context.getChildTarget(), url, deploymentName, root, classLoader, cmd, activation, deploymentServiceName, fromModule);
         raDeployer.setConfiguration(config.getValue());

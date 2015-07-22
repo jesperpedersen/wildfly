@@ -104,6 +104,12 @@ public final class ResourceAdapterXmlDeploymentService extends AbstractResourceA
                 raServiceName = ConnectorServices.getResourceAdapterServiceName(id);
                 this.connectorServicesRegistrationName = id;
             }
+
+            if (raxml != null && raxml.getTransactionSupport() == null && raxml instanceof ModifiableResourceAdapter) {
+                ModifiableResourceAdapter mra = (ModifiableResourceAdapter)raxml;
+                mra.setTransactionSupport(cmd.getResourceadapter().getOutboundResourceadapter().getTransactionSupport());
+            }
+
             final WildFlyRaXmlDeployer raDeployer = new WildFlyRaXmlDeployer(context.getChildTarget(), connectorXmlDescriptor.getUrl(),
                 raName, root, module.getClassLoader(), cmd, localRaXml, deploymentServiceName);
 

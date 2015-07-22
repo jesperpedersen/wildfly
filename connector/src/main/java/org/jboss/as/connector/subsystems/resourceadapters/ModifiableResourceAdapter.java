@@ -70,5 +70,9 @@ public class ModifiableResourceAdapter extends ActivationImpl {
     public void setRaXmlDeploymentServiceName(ServiceName raXmlDeploymentServiceName) {
         this.raXmlDeploymentServiceName = raXmlDeploymentServiceName;
     }
+
+    public void setTransactionSupport(TransactionSupportEnum t) {
+        transactionSupport = t;
+    }
 }
 
